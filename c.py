@@ -5,6 +5,7 @@ dataset = pd.read_csv('covidfinal1.csv')
 X = dataset.iloc[:, :-2]
 y = dataset.iloc[:, 14]
 from sklearn.preprocessing import StandardScaler
+xyz = 3
 
 sc = StandardScaler()
 X = sc.fit_transform(X)
