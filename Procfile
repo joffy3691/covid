@@ -1,0 +1,1 @@
+web: uwsgi --http :8000 --wsgi-file manage.py --master
