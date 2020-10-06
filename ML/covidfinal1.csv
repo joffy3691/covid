@@ -1,4 +1,4 @@
-intubed,pneumonia,age,pregnancy,diabetes,copd,asthma,inmsupr,hypertension,other_disease,cardiovascular,obesity,renal_chronic,tobacco,days to live,age which is of no use
+intubed,pneumonia,age (scaled),pregnancy,diabetes,copd,asthma,inmsupr,hypertension,other_disease,cardiovascular,obesity,renal_chronic,tobacco,days to live,age 
 1,1,0.6,1,0,1,1,1,0,1,0,1,1,1,9,60
 1,0,0.53,1,0,1,1,1,1,1,1,0,1,1,3,53
 1,0,0.65,1,0,1,1,1,1,1,1,1,1,1,14,65

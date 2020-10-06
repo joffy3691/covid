@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+import datetime
 
 class Activation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -41,3 +41,25 @@ class User_Attributes(models.Model):
     blood = models.BooleanField()
     liver = models.BooleanField()
     objects = User_AttributesManager()
+
+class Request_Manager(models.Manager):
+    def create_data(self, user,hospital):
+        details = self.create(user=user,hospital=hospital,time=datetime.datetime.now())
+        return details
+
+class Request(models.Model):
+    user = models.IntegerField()
+    hospital =  models.IntegerField()
+    time = models.DateTimeField()
+    objects = Request_Manager()
+
+class Hospital_Manager(models.Manager):
+    def create_data(self, name,address,phone):
+        details = self.create(name=name,address=address,phone=phone)
+        return details
+
+class Hospital(models.Model):
+    name = models.CharField(max_length=100)
+    address =  models.CharField(max_length=100)
+    phone = models.CharField(max_length=10)
+    objects = Hospital_Manager()

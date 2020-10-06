@@ -31,6 +31,10 @@ class UserDetails(forms.Form):
     blood = forms.BooleanField(required=False, label=_('Hypertension'))
     liver = forms.BooleanField(required=False, label=_('Liver Disease'))
 
+class HospitalForm(forms.Form):
+    user = forms.IntegerField()
+    hospital = forms.IntegerField()
+
 class UserCacheMixin:
     user_cache = None
 

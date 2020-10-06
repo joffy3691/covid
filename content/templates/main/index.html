@@ -4,18 +4,79 @@
 {% load bootstrap4 %}
 {% block content %}
 {% if user.is_authenticated %}
-    <h3 class="display-3">
+    <h5 class="display-2">
       Welcome,
       <small class="text-muted">{{user.first_name}} {{user.last_name}}</small>
-    </h3>
-    <form method='post' class="form">
-        {% csrf_token %}
-        {% bootstrap_form form %}
+    </h5>
+<br>
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+<div class="card" style="width: 18rem;">
+  <img src="https://media.istockphoto.com/vectors/job-application-resume-cv-document-with-man-photo-and-pen-employment-vector-id1079848874?k=6&m=1079848874&s=612x612&w=0&h=Mqk2dWbyF0zzTA5Uiea47A-n9PoQfufqC6pYN5LTdxo=" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">1) Fill in the Form</h5>
+    <p class="card-text">Help us know understand your health condition better before proceeding</p><br>
+      {% if filled_form %}
+      <span style="color:green;text-align:center !important;">
+      <i class="fa fa-check-circle fa-3x" style="text-align:center !important;"></i>
+      </span>
+      {% else %}
+    <a href="{% url 'register' %}" class="btn btn-primary">Fill Form</a>
+      {% endif %}
+  </div>
+</div>
+    </div>
+      <div class="col-sm">
+<div class="card" style="width: 18rem;">
+  <img src="https://img.freepik.com/free-vector/illustration-hospital_53876-81075.jpg?size=338&ext=jpg" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">2) Request a bed in preferred hospitals</h5>
+    <p class="card-text">Select a hospital based on your convenience and distance</p><br>
+    <a href="{% url 'book' %}" class="btn btn-warning" style="color:white !important;background-color:gold !important;border-color:gold !important;" >Browse Hospitals</a>
+  </div>
+</div>
+    </div>
+      <div class="col-sm">
+<div class="card" style="width: 18rem;">
+  <img src="https://st3.depositphotos.com/1001599/12961/v/950/depositphotos_129614330-stock-illustration-patient-lying-in-hospital-bed.jpg" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">3) Bed allotment</h5>
+    <p class="card-text">We will allot a bed in your preferred hospital based on availability and priority!</p>
+    <a href="#" class="btn btn-success" style="color:white !important;background-color:green !important;border-color:green !important;">Check Allotment</a>
+  </div>
+</div>
+    </div>
+  </div>
+</div>
 
-        {% buttons %}
-        <button name="submit" class="btn btn-success">Submit</button>
-        {% endbuttons %}
-    </form>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+        <h3 style="text-align:center;">Tweets</h3>
+    </div>
+    <div class="col-sm">
+        <h3 style="text-align:center;">COVID Statistics - India </h3>
+    </div>
+  </div>
+</div>
+<div class="container-md">
+  <div class="row">
+    <div class="col-lg">
+     <a class="twitter-timeline" data-height="500" data-theme="dark" href="https://twitter.com/COVIDNewsByMIB?ref_src=twsrc%5Etfw">Tweets by COVIDNewsByMIB</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    </div>
+    <div class="col-lg" style="overflow : hidden;
+    position : relative;">
+        <div class="row">
+
+        <iframe style="width:90%;height:138%;position : absolute;
+    top      : -200px;
+    left     : -0px;" scrolling="" src="https://www.covid19india.org" title="Covid Statistics - India"></iframe>
+    </div>
+    </div>
+  </div>
+
 
 {% else %}
     <section class="header9 cid-s6GTayO8yz mbr-fullscreen mbr-parallax-background" id="header9-1">
@@ -167,11 +228,14 @@
                             <button type="submit" class="btn btn-primary btn-form display-4">SEND FORM</button>
                         </div>
                     </div>
-                </form><!---Formbuilder Form--->
+                </form>
             </div>
         </div>
     </div>
 </section>
 {% endif %}
+
+    </div>
+
 
 {% endblock %}

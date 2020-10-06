@@ -1,0 +1,27 @@
+{% extends 'layouts/default/page.html' %}
+
+{% load i18n %}
+{% load bootstrap4 %}
+{% block content %}
+{% if user.is_authenticated %}
+
+{% for hospital in hospitals %}
+<div class="card" style="width: 18rem;display:inline-block;">
+  <img class="card-img-top" src="https://img.freepik.com/free-vector/flat-hospital-building-illustration_1344-105.jpg?size=338&ext=jpg" alt="Card image cap">
+  <div class="card-body">
+    <h5 class="card-title">{{hospital.name}}</h5>
+    <p class="card-text">{{hospital.address}}</p>
+    <button name="submit" type="submit" class="btn btn-success">Book</button>
+  </div>
+</div>
+{% endfor %}
+<form method='post' class="form">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+
+        {% buttons %}
+        <button name="submit" class="btn btn-success">Submit</button>
+        {% endbuttons %}
+</form>
+{% endif %}
+{% endblock %}

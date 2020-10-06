@@ -1,0 +1,20 @@
+{% extends 'layouts/default/page.html' %}
+
+{% load i18n %}
+{% load bootstrap4 %}
+{% block content %}
+{% if user.is_authenticated %}
+<form method='post' class="form">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+
+        {% buttons %}
+        <button name="submit" class="btn btn-success">Submit</button>
+        {% endbuttons %}
+    </form>
+{% endif %}
+
+    </div>
+
+
+{% endblock %}
