@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib import admin
 import datetime
 
 class Activation(models.Model):
@@ -8,58 +9,56 @@ class Activation(models.Model):
     code = models.CharField(max_length=20, unique=True)
     email = models.EmailField(blank=True)
 
-class User_AttributesManager(models.Manager):
-    def create_data(self, user,details_filled,age,gender,bmi,fever,cough,spo2,breathing,pregnant,smoker,alcoholic,
-                    diabetic,cancer,ckd,copd,autoimmune,immunocompromised,heart,asthma,blood,liver):
-        details = self.create(user=user,details_filled=details_filled,age=age,gender=gender,bmi=bmi,fever=fever,cough=cough,spo2=spo2,breathing=breathing,pregnant=pregnant,
-                              smoker=smoker,alcoholic=alcoholic,diabetic=diabetic,cancer=cancer,ckd=ckd,copd=copd
-                              ,autoimmune=autoimmune,immunocompromised=immunocompromised,heart=heart,
-                              asthma=asthma,blood=blood,liver=liver)
-        return details
 
 class User_Attributes(models.Model):
+    date = models.DateTimeField()
     user = models.IntegerField()
     details_filled = models.BooleanField()
     age = models.IntegerField()
+    pneumonia = models.BooleanField()
     gender = models.CharField(max_length=10)
-    bmi = models.FloatField()
-    fever = models.FloatField()
-    cough = models.BooleanField()
-    spo2 = models.FloatField()
+    obesity = models.BooleanField()
     breathing = models.BooleanField()
     pregnant = models.BooleanField()
     smoker = models.BooleanField()
-    alcoholic = models.BooleanField()
     diabetic = models.BooleanField()
-    cancer = models.BooleanField()
     ckd = models.BooleanField()
     copd = models.BooleanField()
-    autoimmune = models.BooleanField()
     immunocompromised = models.BooleanField()
     heart = models.BooleanField()
     asthma = models.BooleanField()
     blood = models.BooleanField()
-    liver = models.BooleanField()
-    objects = User_AttributesManager()
+    others = models.BooleanField()
+
 
 class Request_Manager(models.Manager):
-    def create_data(self, user,hospital):
-        details = self.create(user=user,hospital=hospital,time=datetime.datetime.now())
+    def create_data(self, user,hospital,priority,fulfilled,confirmtime):
+        details = self.create(user=user,hospital=hospital,time=datetime.datetime.now(),priority=priority,fulfilled=fulfilled,confirmtime=confirmtime)
         return details
 
 class Request(models.Model):
     user = models.IntegerField()
-    hospital =  models.IntegerField()
+    hospital = models.IntegerField()
     time = models.DateTimeField()
+    priority = models.FloatField()
+    fulfilled = models.BooleanField()
+    confirmtime = models.CharField(max_length=50)
     objects = Request_Manager()
 
 class Hospital_Manager(models.Manager):
-    def create_data(self, name,address,phone):
-        details = self.create(name=name,address=address,phone=phone)
+    def create_data(self, name,address,phone,total_beds,available_beds):
+        details = self.create(name=name,address=address,phone=phone,total_beds=total_beds,available_beds=available_beds)
         return details
 
 class Hospital(models.Model):
     name = models.CharField(max_length=100)
     address =  models.CharField(max_length=100)
     phone = models.CharField(max_length=10)
+    total_beds = models.IntegerField()
+    available_beds = models.IntegerField()
     objects = Hospital_Manager()
+
+    def __str__(self):
+        return self.name
+
+admin.site.register(Hospital)

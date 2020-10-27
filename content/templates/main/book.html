@@ -4,24 +4,28 @@
 {% load bootstrap4 %}
 {% block content %}
 {% if user.is_authenticated %}
+{{ form.errors }}
+<form method='post'>
+        {% csrf_token %}
 
 {% for hospital in hospitals %}
+
 <div class="card" style="width: 18rem;display:inline-block;">
   <img class="card-img-top" src="https://img.freepik.com/free-vector/flat-hospital-building-illustration_1344-105.jpg?size=338&ext=jpg" alt="Card image cap">
   <div class="card-body">
     <h5 class="card-title">{{hospital.name}}</h5>
     <p class="card-text">{{hospital.address}}</p>
-    <button name="submit" type="submit" class="btn btn-success">Book</button>
+    {% if hospital.available_beds > 0 %}
+    <p class="card-text" style="color:green;">Available beds: {{hospital.available_beds}}</p>
+    {% else %}
+    <p class="card-text" style="color:red;">Available beds: {{hospital.available_beds}}</p>
+    {% endif %}
+    <p class="card-text" style="color:blue;">Total beds: {{hospital.total_beds}}</p>
+    <input name="hospital" type="submit" class="btn btn-success" value="{{hospital.id}}">
   </div>
 </div>
 {% endfor %}
-<form method='post' class="form">
-        {% csrf_token %}
-        {% bootstrap_form form %}
-
-        {% buttons %}
-        <button name="submit" class="btn btn-success">Submit</button>
-        {% endbuttons %}
 </form>
+
 {% endif %}
 {% endblock %}

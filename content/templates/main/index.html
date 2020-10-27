@@ -33,7 +33,14 @@
   <div class="card-body">
     <h5 class="card-title">2) Request a bed in preferred hospitals</h5>
     <p class="card-text">Select a hospital based on your convenience and distance</p><br>
+      {% if booked_hospital %}
+      <span style="color:green;text-align:center !important;">
+      <i class="fa fa-check-circle fa-3x" style="text-align:center !important;"></i>
+      </span>
+      {% else %}
     <a href="{% url 'book' %}" class="btn btn-warning" style="color:white !important;background-color:gold !important;border-color:gold !important;" >Browse Hospitals</a>
+      {% endif %}
+
   </div>
 </div>
     </div>
@@ -43,7 +50,7 @@
   <div class="card-body">
     <h5 class="card-title">3) Bed allotment</h5>
     <p class="card-text">We will allot a bed in your preferred hospital based on availability and priority!</p>
-    <a href="#" class="btn btn-success" style="color:white !important;background-color:green !important;border-color:green !important;">Check Allotment</a>
+    <a href="{% url 'allotment' %}" class="btn btn-success" style="color:white !important;background-color:green !important;border-color:green !important;">Check Allotment</a>
   </div>
 </div>
     </div>
@@ -127,13 +134,11 @@
 
                         <div class="card-text">
                             <h3 class="count pt-3 pb-3 mbr-fonts-style display-2">
-                                  100
+                                {{users}}
                             </h3>
                             <h4 class="mbr-content-title mbr-bold mbr-fonts-style display-7">
                                 Customers Served</h4>
-                            <p class="mbr-content-text mbr-fonts-style display-7">
-                                Mobirise give you the freedom to develop as many websites as you like given the fact that it is desktop app. Mobirise is the perfect gide.
-                            </p>
+                            <p class="mbr-content-text mbr-fonts-style display-7">Patients are our main asset. Their safety is our first priority.</p>
                         </div>
                     </div>
                 </div>
@@ -146,12 +151,12 @@
                         </div>
                         <div class="card-text">
                             <h3 class="count pt-3 pb-3 mbr-fonts-style display-2">
-                                  200
+                                {{bed_alloted}}
                             </h3>
                             <h4 class="mbr-content-title mbr-bold mbr-fonts-style display-7">
                                 Beds Allotted</h4>
                             <p class="mbr-content-text mbr-fonts-style display-7">
-                                    Choose from the large selection of latest pre-made blocks - jumbotrons, hero images, parallax scrolling, video backgrounds, hamburger menu, sticky header and more.
+                                  We ensure that every patient is alloted a bed based on the severity of their condition
                             </p>
                         </div>
                     </div>
@@ -164,12 +169,12 @@
                         </div>
                         <div class="card-text">
                             <h3 class="count pt-3 pb-3 mbr-fonts-style display-2">
-                                  300
+                                {{hospitals}}
                             </h3>
                             <h4 class="mbr-content-title mbr-bold mbr-fonts-style display-7">
                                 Hospitals</h4>
                             <p class="mbr-content-text mbr-fonts-style display-7">
-                                    One of Bootstrap's big point is responsiveness and obirise male effective use of this by genereating highly responsive website for you.
+                            Hospitals that are part of our life-saving project
                             </p>
                         </div>
                     </div>

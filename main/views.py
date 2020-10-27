@@ -1,11 +1,41 @@
 from django.views.generic import TemplateView, FormView
 from accounts.forms import UserDetails, HospitalForm
 from accounts.models import User_Attributes, Hospital, Request
-from django.shortcuts import redirect
+from django.contrib.auth.models import User
+from django.shortcuts import redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
+from ML import covid_priority
+import datetime
 
+
+class AllotmentPageView(TemplateView):
+    template_name = 'main/allotment.html'
+
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        context['user'] = self.request.user
+        try:
+            context['filled_form'] = User_Attributes.objects.filter(user=context['user'].id)
+            context['booked_hospital'] = Request.objects.filter(user=context['user'].id)
+            av = Hospital.objects.filter(id=context['booked_hospital'][0].hospital)[0]
+            avb = Hospital.objects.filter(id=context['booked_hospital'][0].hospital)[0].available_beds
+            while avb>0:
+                pending = Request.objects.filter(hospital=context['booked_hospital'][0].hospital).filter(fulfilled=0).order_by('priority')[0]
+                pending.fulfilled=1
+                pending.confirmtime=datetime.datetime.now()
+                pending.save()
+                avb-=1
+                av.available_beds -=1
+                av.save()
+            context['queue'] = Request.objects.filter(fulfilled=0).filter(hospital=context['booked_hospital'][0].hospital).count()
+            context['index'] = Request.objects.filter(fulfilled=0).filter(hospital=context['booked_hospital'][0].hospital).filter(priority__lt=context['booked_hospital'][0].priority).count()
+        except:
+            pass
+        context['hospitals'] = Hospital.objects.all()
+        return context
 
 class IndexPageView(TemplateView):
     template_name = 'main/index.html'
@@ -14,6 +44,10 @@ class IndexPageView(TemplateView):
         context = {}
         context['user'] = self.request.user
         context['filled_form'] = User_Attributes.objects.filter(user=context['user'].id)
+        context['booked_hospital'] = Request.objects.filter(user=context['user'].id)
+        context['users'] = User.objects.count()
+        context['hospitals'] = Hospital.objects.count()
+        context['bed_alloted'] = Request.objects.filter(fulfilled=1).count()
         return context
 
 class HospitalPageView(LoginRequiredMixin,FormView):
@@ -35,9 +69,34 @@ class HospitalPageView(LoginRequiredMixin,FormView):
         request = self.request
         user = self.request.user.id
         hospital = form.cleaned_data['hospital']
-        Request.objects.create_data(user,hospital)
+        fulfilled = 0
+        pref_hospital = Hospital.objects.filter(id=hospital)[0]
+        confirmtime="NA"
+        if pref_hospital.available_beds>0:
+            pref_hospital.available_beds -=1
+            pref_hospital.save()
+            fulfilled = 1
+            confirmtime=datetime.datetime.now()
+        det = User_Attributes.objects.filter(user=self.request.user.id).latest('id')
+        breathing = det.breathing
+        pneumonia = det.pneumonia
+        age = det.age
+        pregnant = det.pregnant
+        diabetes = det.diabetic
+        copd = det.copd
+        asthma = det.asthma
+        immsupr = det.immunocompromised
+        hypertension = det.blood
+        other = det.others
+        cardio = det.heart
+        obesity = det.obesity
+        renal = det.ckd
+        smoker = det.smoker
+        priority = covid_priority.priority(breathing, pneumonia, age, pregnant, diabetes, copd, asthma, immsupr, hypertension,
+                                  other, cardio, obesity, renal, smoker)
+        Request.objects.create_data(user,hospital,priority,fulfilled,confirmtime)
         messages.success(
-            request, _('Thank You for filling the form.'))
+            request, _('Your request for bed has been confirmed.'))
 
         return redirect('index')
 
@@ -45,45 +104,26 @@ class HospitalPageView(LoginRequiredMixin,FormView):
 class FormPageView(FormView):
     template_name = 'main/register.html'
     form_class = UserDetails
-
-    def get_initial(self):
-        initial = super(FormPageView, self).get_initial()
-        initial['user'] = self.request.user.id
-        return initial
+    form = UserDetails
 
     def form_valid(self, form):
-        request = self.request
-        ud = User_Attributes()
-        user = self.request.user.id
-        details_filled = 1
-        age = form.cleaned_data['age']
-        gender = form.cleaned_data['gender']
-        bmi = form.cleaned_data['bmi']
-        fever = form.cleaned_data['fever']
-        spo2 = form.cleaned_data['spo2']
-        cough = form.cleaned_data['cough']
-        breathing = form.cleaned_data['breathing']
-        pregnant = form.cleaned_data['pregnant']
-        smoker = form.cleaned_data['smoker']
-        alcoholic = form.cleaned_data['alcoholic']
-        diabetic = form.cleaned_data['diabetic']
-        cancer = form.cleaned_data['cancer']
-        ckd = form.cleaned_data['ckd']
-        copd = form.cleaned_data['copd']
-        autoimmune = form.cleaned_data['autoimmune']
-        immunocompromised = form.cleaned_data['immunocompromised']
-        heart = form.cleaned_data['heart']
-        asthma = form.cleaned_data['asthma']
-        blood = form.cleaned_data['blood']
-        liver = form.cleaned_data['liver']
-        User_Attributes.objects.create_data(user, details_filled, age, gender, bmi, fever, cough, spo2, breathing,
-                                            pregnant, smoker, alcoholic,
-                                            diabetic, cancer, ckd, copd, autoimmune, immunocompromised, heart, asthma,
-                                            blood, liver)
-        messages.success(
-            request, _('Thank You for filling the form.'))
+        if self.request.method == 'POST':
+            form = UserDetails(self.request.POST, self.request.FILES)
 
-        return redirect('index')
+            if form.is_valid():
+                newform = form.save(commit=False)
+                newform.user = self.request.user.id
+                newform.date= datetime.datetime.now()
+                newform.details_filled = 1
+
+                newform.save()
+                messages.success(
+                    self.request, _('Your details have been stored.'))
+                return redirect('index')
+        else:
+            form = UserDetails()
+            return render(request, 'main/register.html', {'form': form})
+
 
 
 class ChangeLanguageView(TemplateView):

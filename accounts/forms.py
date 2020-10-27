@@ -7,32 +7,42 @@ from django.contrib.auth.forms import UserCreationForm
 from django.utils import timezone
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
+from .models import User_Attributes
 
 
-class UserDetails(forms.Form):
+class UserDetails(forms.ModelForm):
+    class Meta:
+        model = User_Attributes
+        fields = [
+            'age', 'gender', 'pneumonia',
+                             'breathing',
+            'pregnant',
+            'smoker',
+            'hypertension', 'diabetic', 'ckd', 'copd', 'immunocompromised',
+            'heart',
+            'asthma',
+            'blood',
+            'obesity',
+            'others']
+
     age = forms.IntegerField(label=_('Age (in yrs)'))
     gender = forms.CharField(label=_('Gender'))
-    bmi = forms.FloatField(label=_('Body Mass Index (BMI)'))
-    fever = forms.FloatField(label=_('Body Temperature (in F)'))
-    spo2 = forms.FloatField(label=_('Oxygen Saturation (sPO2)'))
-    cough = forms.BooleanField(required=False, label=_('Cough/Cold'))
+    pneumonia = forms.BooleanField(required=False, label=_('Pneumonia'))
     breathing = forms.BooleanField(required=False, label=_('Difficulty in breathing'))
     pregnant = forms.BooleanField(required=False, label=_('Pregnant'))
-    smoker = forms.BooleanField(required=False, label=_('Smoker/Non-Smoker'))
-    alcoholic = forms.BooleanField(required=False, label=_('Alcoholic/Teetotaler'))
+    smoker = forms.BooleanField(required=False, label=_('Smoker'))
+    hypertension = forms.BooleanField(required=False, label=_('Hypertension'))
     diabetic = forms.BooleanField(required=False, label=_('Diabetic'))
-    cancer = forms.BooleanField(required=False, label=_('Cancer'))
     ckd = forms.BooleanField(required=False, label=_('Chronic Kidney Disease'))
     copd = forms.BooleanField(required=False, label=_('COPD'))
-    autoimmune = forms.BooleanField(required=False, label=_('Autoimmune conditions'))
     immunocompromised = forms.BooleanField(required=False, label=_('Immunocompromised (from organ transplant, HIV, medication etc)'))
     heart = forms.BooleanField(required=False, label=_('Heart Conditions'))
-    asthma = forms.BooleanField(required=False, label=_('Asthma/Breathing Difficulty'))
+    asthma = forms.BooleanField(required=False, label=_('Asthma'))
     blood = forms.BooleanField(required=False, label=_('Hypertension'))
-    liver = forms.BooleanField(required=False, label=_('Liver Disease'))
+    obesity = forms.BooleanField(required=False, label=_('Obesity'))
+    others = forms.BooleanField(required=False, label=_('Other complications'))
 
 class HospitalForm(forms.Form):
-    user = forms.IntegerField()
     hospital = forms.IntegerField()
 
 class UserCacheMixin:
