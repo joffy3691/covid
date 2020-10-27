@@ -1,0 +1,41 @@
+{% extends 'layouts/default/page.html' %}
+
+{% load i18n %}
+{% load bootstrap4 %}
+{% block content %}
+{% if user.is_authenticated %}
+<h1>Allotment Status</h1><br><br>
+
+{% for patient in filled_form %}
+<table>
+    {% for booking in booked_hospital %}
+    {% for hospital in hospitals %}
+    {% if hospital.id == booking.hospital %}
+    {% if booking.fulfilled %}
+    <tr><td style="background-color:black;color:green;">Status: Confirmed <td></tr>
+    <tr><td style="background-color:black;color:green;">Confirmation Time: {{booking.confirmtime}} IST <td></tr>
+    {% else %}
+    <tr><td style="background-color:black;color:yellow;">Status: Pending <td></tr>
+    <tr><td style="background-color:black;color:yellow;">There are {{queue}} patients in the queue<td></tr>
+    <tr><td style="background-color:black;color:yellow;">There are {{index}} patients ahead of you<td></tr>
+    {% endif %}
+    <tr><td><hr></td></tr>
+    <tr><td>User ID: {{patient.user}}</td></tr>
+    <tr><td>Booking Date: {{booking.time}}</td></tr>
+    <tr><td>Patient Name: {{user.first_name}} {{user.last_name}}<td></tr>
+    <tr><td>Age: {{patient.age}} yrs<td></tr>
+    <tr><td><hr></td></tr>
+    <tr><th>Hospital Details <th></tr>
+    <tr><td>Hospital: {{hospital.name}} <td></tr>
+    <tr><td>Address: {{hospital.address}} <td></tr>
+    <tr><td>Phone: {{hospital.phone}} <td></tr>
+
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+</table>
+<br>
+
+{% endfor %}
+{% endif %}
+{% endblock %}
